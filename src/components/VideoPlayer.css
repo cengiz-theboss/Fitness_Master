@@ -1,0 +1,98 @@
+.video-player-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: var(--spacing-2xl) var(--spacing-md);
+}
+
+.video-player-container {
+  width: 100%;
+  max-width: 1000px;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: var(--spacing-3xl);
+}
+
+.close-btn {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  z-index: 10;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.close-btn:hover {
+  background-color: var(--accent-secondary);
+  transform: scale(1.1);
+}
+
+.player-wrapper {
+  position: relative;
+  padding-top: 56.25%; /* Player ratio: 100 / (1280 / 720) */
+  background-color: black;
+}
+
+.react-player, .native-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.video-details {
+  padding: var(--spacing-xl);
+}
+
+.video-title-large {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.video-description {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2xl);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.comments-wrapper {
+  margin-top: var(--spacing-2xl);
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--spacing-2xl);
+}
+
+.troubleshooting-tip {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: rgba(244, 63, 94, 0.1);
+  border-left: 4px solid var(--accent-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.troubleshooting-tip strong {
+  color: var(--accent-secondary);
+}
