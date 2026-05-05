@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { supabase, signInWithGoogle, logout as supabaseLogout } from '../supabase';
+import { auth, signInWithGoogle as firebaseSignInWithGoogle, logout as firebaseLogout } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const AuthContext = createContext();
 
@@ -13,53 +14,37 @@ export function AuthProvider({ children }) {
   const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
-    // Listen for Auth State Changes (this runs first and catches OAuth redirects)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth State Changed:', event);
-      
-      if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
-        setCurrentUser(session?.user ?? null);
-        setLoading(false);
-      } else if (event === 'SIGNED_OUT') {
-        setCurrentUser(null);
-        setLoading(false);
-      } else if (event === 'INITIAL_SESSION') {
-        // This is called once on mount
-        setCurrentUser(session?.user ?? null);
-        setLoading(false);
-      }
+    // Listen for auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log('Auth State Changed:', user ? 'SIGNED_IN' : 'SIGNED_OUT');
+      setCurrentUser(user);
+      setLoading(false);
     });
 
-    return () => {
-      if (subscription) subscription.unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
   const loginWithGoogle = async () => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin, // Redirect to home, let router handle redirect
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-        },
-      });
-      if (error) throw error;
+      setAuthError(null);
+      await firebaseSignInWithGoogle();
     } catch (error) {
-      console.error('Login error:', error.message);
-      alert('Login failed: ' + error.message);
+      const errorMessage = error.message || 'Login failed';
+      console.error('Login error:', errorMessage);
+      setAuthError(errorMessage);
+      alert('Login failed: ' + errorMessage);
     }
   };
 
   const logout = async () => {
     try {
-      await supabaseLogout();
+      setAuthError(null);
+      await firebaseLogout();
       window.location.href = '/'; // Clear state by redirecting to home
     } catch (error) {
-      console.error('Logout error:', error.message);
+      const errorMessage = error.message || 'Logout failed';
+      console.error('Logout error:', errorMessage);
+      setAuthError(errorMessage);
     }
   };
 
@@ -77,3 +62,4 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
