@@ -31,7 +31,41 @@ const workoutTypes = [
   { id: 'Rest', icon: <CheckCircle2 size={20} />, color: 'var(--text-secondary)' }
 ];
 
-const padTime = (value) => String(value).padStart(2, '0');
+const scheduleNextNotification = () => {
+    if (!notificationsEnabled || typeof window === 'undefined' || !('Notification' in window) || Notification.permission !== 'granted') return;
+
+    // Clear previous timeout
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+    }
+
+    const now = new Date();
+    const currentDay = dayNames[now.getDay()];
+    const workout = schedule[currentDay];
+    const scheduledTime = scheduleTimes[currentDay];
+
+    if (!workout || workout === 'Rest' || !scheduledTime) return;
+
+    const [hours, minutes] = scheduledTime.split(':').map(Number);
+    const scheduledDate = new Date();
+    scheduledDate.setHours(hours, minutes, 0, 0);
+
+    // If the time has passed today, schedule for tomorrow
+    if (scheduledDate <= now) {
+      scheduledDate.setDate(scheduledDate.getDate() + 1);
+    }
+
+    const timeDiff = scheduledDate - now;
+
+    notificationTimeoutRef.current = setTimeout(() => {
+      new Notification('Workout Reminder', {
+        body: `It's ${scheduledTime}. Time for your ${workout} session on ${currentDay}.`,
+        icon: '/logo192.png'
+      });
+      // Schedule the next one (tomorrow)
+      scheduleNextNotification();
+    }, timeDiff);
+  };
 
 const Schedule = () => {
   const { currentUser } = useAuth();
@@ -42,6 +76,7 @@ const Schedule = () => {
   const [notificationPermission, setNotificationPermission] = useState('default');
   const [isToggling, setIsToggling] = useState(false);
   const notifiedEvents = useRef({});
+  const notificationTimeoutRef = useRef(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -82,42 +117,11 @@ const Schedule = () => {
   }, [notificationsEnabled]);
 
   useEffect(() => {
-    if (!notificationsEnabled || typeof window === 'undefined') return;
-    if (!('Notification' in window) || Notification.permission !== 'granted') return;
-
-    const checkForNotification = () => {
-      const now = new Date();
-      const currentDay = dayNames[now.getDay()];
-      const currentTime = `${padTime(now.getHours())}:${padTime(now.getMinutes())}`;
-      const workout = schedule[currentDay];
-      const scheduledTime = scheduleTimes[currentDay];
-
-      if (workout && workout !== 'Rest' && scheduledTime) {
-        // Parse scheduled time
-        const [schedHours, schedMinutes] = scheduledTime.split(':').map(Number);
-        const scheduledDate = new Date();
-        scheduledDate.setHours(schedHours, schedMinutes, 0, 0);
-
-        const timeDiff = now - scheduledDate;
-        // Trigger if within 1 minute after scheduled time
-        if (timeDiff >= 0 && timeDiff < 60000) {
-          const eventKey = `${currentDay}-${scheduledTime}`;
-          if (!notifiedEvents.current[eventKey]) {
-            new Notification('Workout Reminder', {
-              body: `It's ${currentTime}. Time for your ${workout} session on ${currentDay}.`,
-              icon: '/logo192.png'
-            });
-            notifiedEvents.current[eventKey] = true;
-          }
-        }
-      }
-    };
-
-    const intervalId = setInterval(checkForNotification, 15000);
-    checkForNotification(); // Check immediately
-
+    scheduleNextNotification();
     return () => {
-      clearInterval(intervalId);
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
     };
   }, [notificationsEnabled, schedule, scheduleTimes]);
 
@@ -200,7 +204,7 @@ const Schedule = () => {
       </div>
 
       <p className="notification-note">
-        Exact reminder delivery works when browser notifications are allowed. Notifications trigger within 1 minute of your scheduled time. Keep the browser open or in the background on mobile for best results.
+        Notifications are scheduled for your exact workout times. Keep the browser open or in the background on mobile for reminders to appear. On some mobile browsers, you may need to add the site to your home screen for background notifications.
       </p>
 
       <div className="schedule-grid">
