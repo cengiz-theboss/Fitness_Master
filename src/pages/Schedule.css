@@ -159,5 +159,5 @@
 @media (max-width: 768px) {
   .schedule-header { text-align: center; justify-content: center; }
   .schedule-grid { grid-template-columns: 1fr; }
-  .schedule-actions { flex-direction: column; align-items: stretch; gap: 1rem; }
+  .schedule-actions { flex-direction: column; align-items: stretch; gap: 2rem; }
 }

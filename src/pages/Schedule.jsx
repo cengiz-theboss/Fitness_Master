@@ -150,8 +150,8 @@ const Schedule = () => {
             icon: '/logo192.png'
           });
         } else {
-          setNotificationsEnabled(false);
-          alert('Please allow notifications in your browser settings to receive workout reminders.');
+          alert('Notifications not enabled. Please allow notifications in your browser settings to receive workout reminders.');
+          // Don't change state
         }
       }
     }
