@@ -122,21 +122,29 @@ const Schedule = () => {
     setScheduleTimes(prev => ({ ...prev, [day]: time }));
   };
 
-  const requestNotificationPermission = async () => {
-    if (!('Notification' in window)) return;
-
-    const permission = await Notification.requestPermission();
-    setNotificationPermission(permission);
-
-    if (permission === 'granted') {
-      setNotificationsEnabled(true);
-      new Notification('Notifications Enabled!', {
-        body: 'You will now receive reminders for your scheduled workouts.',
-        icon: '/logo192.png'
-      });
-    } else {
+  const handleNotificationToggle = async () => {
+    if (notificationsEnabled) {
+      // Disable reminders
       setNotificationsEnabled(false);
-      alert('Please allow notifications in your browser settings to receive workout reminders.');
+      localStorage.setItem('fitnessmaster-schedule-notifications', 'false');
+    } else {
+      // Try to enable reminders
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        setNotificationPermission(permission);
+        if (permission === 'granted') {
+          setNotificationsEnabled(true);
+          localStorage.setItem('fitnessmaster-schedule-notifications', 'true');
+          new Notification('Notifications Enabled!', {
+            body: 'You will now receive reminders for your scheduled workouts.',
+            icon: '/logo192.png'
+          });
+        } else {
+          setNotificationsEnabled(false);
+          localStorage.setItem('fitnessmaster-schedule-notifications', 'false');
+          alert('Please allow notifications in your browser settings to receive workout reminders.');
+        }
+      }
     }
   };
 
@@ -172,10 +180,10 @@ const Schedule = () => {
         <div className="schedule-actions">
           <button
             className={`btn-notification ${notificationsEnabled ? 'active' : ''}`}
-            onClick={requestNotificationPermission}
+            onClick={handleNotificationToggle}
           >
             <Bell size={20} />
-            {notificationsEnabled ? 'Reminders Enabled' : 'Reminders are Disabled'}
+            {notificationsEnabled ? 'Disable Reminders' : 'Enable Reminders'}
           </button>
           <button className="btn btn-primary" onClick={saveSchedule}>Save Changes</button>
         </div>
