@@ -105,6 +105,35 @@
   transform: scale(1.2);
 }
 
+.time-field {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.time-field label {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.time-field input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.notification-note {
+  max-width: 900px;
+  margin: 0 auto 1.75rem;
+  color: var(--text-secondary);
+  font-size: 0.98rem;
+  text-align: center;
+}
+
 .toast {
   position: fixed;
   bottom: 40px;
