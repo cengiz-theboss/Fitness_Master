@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import './Clubs.css';
 
 const clubsByCity = {
@@ -24,11 +25,34 @@ const cityList = Object.keys(clubsByCity);
 const brandList = ['Basic-Fit', 'TrainMore'];
 
 const Clubs = () => {
+  const { currentUser, loginWithGoogle, loading } = useAuth();
   const [selectedCity, setSelectedCity] = useState('Amsterdam');
   const [selectedBrand, setSelectedBrand] = useState('Basic-Fit');
   const brandKey = selectedBrand === 'Basic-Fit' ? 'basic' : 'train';
   const mapQuery = `${selectedBrand} ${selectedCity}`;
   const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`;
+
+  if (loading) {
+    return (
+      <div className="page-container container section text-center">
+        <h2 className="section-title">Loading your club access...</h2>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="page-container container section text-center">
+        <h2 className="section-title">Sign in to access Clubs</h2>
+        <p style={{ marginTop: '1rem', color: 'var(--text-secondary)' }}>
+          Only signed-in members can view and switch club maps for Amsterdam, Rotterdam, Den Haag, and Almere.
+        </p>
+        <button className="btn btn-primary" style={{ marginTop: '1.5rem' }} onClick={loginWithGoogle}>
+          Sign in with Google
+        </button>
+      </div>
+    );
+  }
 
   return (
     <section className="clubs-page section">
