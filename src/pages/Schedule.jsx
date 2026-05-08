@@ -85,20 +85,29 @@ const Schedule = () => {
       const workout = schedule[currentDay];
       const scheduledTime = scheduleTimes[currentDay];
 
-      if (workout && workout !== 'Rest' && scheduledTime === currentTime) {
-        const eventKey = `${currentDay}-${currentTime}-${workout}`;
-        if (!notifiedEvents.current[eventKey]) {
-          new Notification('Workout Reminder', {
-            body: `It's ${currentTime}. Time for your ${workout} session on ${currentDay}.`,
-            icon: '/logo192.png'
-          });
-          notifiedEvents.current[eventKey] = true;
+      if (workout && workout !== 'Rest' && scheduledTime) {
+        // Parse scheduled time
+        const [schedHours, schedMinutes] = scheduledTime.split(':').map(Number);
+        const scheduledDate = new Date();
+        scheduledDate.setHours(schedHours, schedMinutes, 0, 0);
+
+        const timeDiff = now - scheduledDate;
+        // Trigger if within 1 minute after scheduled time
+        if (timeDiff >= 0 && timeDiff < 60000) {
+          const eventKey = `${currentDay}-${scheduledTime}`;
+          if (!notifiedEvents.current[eventKey]) {
+            new Notification('Workout Reminder', {
+              body: `It's ${currentTime}. Time for your ${workout} session on ${currentDay}.`,
+              icon: '/logo192.png'
+            });
+            notifiedEvents.current[eventKey] = true;
+          }
         }
       }
     };
 
     const intervalId = setInterval(checkForNotification, 15000);
-    checkForNotification();
+    checkForNotification(); // Check immediately
 
     return () => {
       clearInterval(intervalId);
@@ -173,7 +182,7 @@ const Schedule = () => {
       </div>
 
       <p className="notification-note">
-        Exact reminder delivery works when browser notifications are allowed. On mobile devices, allow notifications and keep the browser open or in the background for the message to appear.
+        Exact reminder delivery works when browser notifications are allowed. Notifications trigger within 1 minute of your scheduled time. Keep the browser open or in the background on mobile for best results.
       </p>
 
       <div className="schedule-grid">
