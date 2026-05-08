@@ -1,0 +1,95 @@
+.clubs-page {
+  padding: 5rem 0;
+}
+
+.clubs-hero {
+  max-width: 900px;
+  margin: 0 auto 3rem;
+  text-align: center;
+}
+
+.clubs-title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.clubs-intro {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.map-section {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+.map-card {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.map-card-header {
+  padding: 1.75rem 1.75rem 0;
+}
+
+.map-card-header h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+.map-card-header p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.map-frame-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  overflow: hidden;
+}
+
+.map-frame-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.club-list {
+  list-style: none;
+  margin: 1.5rem 1.75rem 2rem;
+  padding: 0;
+  color: var(--text-primary);
+  line-height: 1.8;
+}
+
+.club-list li {
+  margin-bottom: 0.8rem;
+}
+
+.club-list strong {
+  color: var(--text-primary);
+}
+
+@media (max-width: 900px) {
+  .map-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .clubs-page {
+    padding: 3rem 1rem;
+  }
+
+  .clubs-title {
+    font-size: 2.4rem;
+  }
+}

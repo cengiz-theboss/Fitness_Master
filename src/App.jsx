@@ -9,6 +9,7 @@ import Inventory from './pages/Inventory';
 import Profile from './pages/Profile';
 import Recipes from './pages/Recipes';
 import Schedule from './pages/Schedule';
+import Clubs from './pages/Clubs';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
               <Route path="/inventory" element={<Inventory />} />
               <Route path="/recipes" element={<Recipes />} />
               <Route path="/schedule" element={<Schedule />} />
+              <Route path="/clubs" element={<Clubs />} />
               <Route path="/profile" element={<Profile />} />
             </Routes>
           </main>

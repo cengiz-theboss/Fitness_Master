@@ -24,6 +24,7 @@ const Footer = () => {
         <div className="footer-links-group">
           <h4 className="footer-title">Quick Links</h4>
           <Link to="/training">Training</Link>
+          <Link to="/clubs">Clubs</Link>
           <Link to="/diet">Diet & Nutrition</Link>
           <Link to="/inventory">Gym Inventory</Link>
         </div>
