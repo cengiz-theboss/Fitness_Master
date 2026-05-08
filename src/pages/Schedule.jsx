@@ -124,9 +124,11 @@ const Schedule = () => {
 
   const handleNotificationToggle = async () => {
     if (notificationsEnabled) {
-      // Disable reminders
-      setNotificationsEnabled(false);
-      localStorage.setItem('fitnessmaster-schedule-notifications', 'false');
+      // Confirm before disabling
+      if (window.confirm('Are you sure you want to disable reminders?')) {
+        setNotificationsEnabled(false);
+        localStorage.setItem('fitnessmaster-schedule-notifications', 'false');
+      }
     } else {
       // Try to enable reminders
       if ('Notification' in window) {
