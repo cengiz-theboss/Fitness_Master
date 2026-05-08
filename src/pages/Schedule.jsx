@@ -175,7 +175,7 @@ const Schedule = () => {
             onClick={requestNotificationPermission}
           >
             <Bell size={20} />
-            {notificationsEnabled ? 'Reminders On' : 'Enable Reminders'}
+            {notificationsEnabled ? 'Reminders Enabled' : 'Reminders are Disabled'}
           </button>
           <button className="btn btn-primary" onClick={saveSchedule}>Save Changes</button>
         </div>
