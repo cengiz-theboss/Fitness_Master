@@ -19,10 +19,49 @@
   line-height: 1.8;
 }
 
-.map-section {
+.selector-panel {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2rem;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.selector-group {
+  background: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.selector-group h2 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.selector-btn {
+  flex: 1 1 auto;
+  min-width: 140px;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.selector-btn:hover,
+.selector-btn.active {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
 }
 
 .map-card {
@@ -33,13 +72,17 @@
   border: 1px solid rgba(255,255,255,0.08);
 }
 
+.single-map-card {
+  overflow: hidden;
+}
+
 .map-card-header {
   padding: 1.75rem 1.75rem 0;
 }
 
 .map-card-header h2 {
   margin-bottom: 0.5rem;
-  font-size: 1.75rem;
+  font-size: 1.85rem;
 }
 
 .map-card-header p {
@@ -62,24 +105,17 @@
   border: 0;
 }
 
-.club-list {
-  list-style: none;
-  margin: 1.5rem 1.75rem 2rem;
-  padding: 0;
+.club-details {
+  padding: 1.5rem 1.75rem 2rem;
   color: var(--text-primary);
-  line-height: 1.8;
 }
 
-.club-list li {
-  margin-bottom: 0.8rem;
-}
-
-.club-list strong {
+.club-details strong {
   color: var(--text-primary);
 }
 
 @media (max-width: 900px) {
-  .map-section {
+  .selector-panel {
     grid-template-columns: 1fr;
   }
 }
@@ -91,5 +127,9 @@
 
   .clubs-title {
     font-size: 2.4rem;
+  }
+
+  .selector-btn {
+    min-width: 100%;
   }
 }

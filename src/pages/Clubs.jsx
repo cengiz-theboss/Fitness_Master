@@ -1,58 +1,94 @@
+import { useState } from 'react';
 import './Clubs.css';
 
+const clubsByCity = {
+  Amsterdam: {
+    basic: 'Basic-Fit Amsterdam Sloterdijk',
+    train: 'TrainMore Amsterdam Centrum',
+  },
+  Rotterdam: {
+    basic: 'Basic-Fit Rotterdam Blaak',
+    train: 'TrainMore Rotterdam Zuidplein',
+  },
+  'Den Haag': {
+    basic: 'Basic-Fit Den Haag Centrum',
+    train: 'TrainMore Den Haag Spui',
+  },
+  Almere: {
+    basic: 'Basic-Fit Almere Stad',
+    train: 'TrainMore Almere Stad',
+  },
+};
+
+const cityList = Object.keys(clubsByCity);
+const brandList = ['Basic-Fit', 'TrainMore'];
+
 const Clubs = () => {
+  const [selectedCity, setSelectedCity] = useState('Amsterdam');
+  const [selectedBrand, setSelectedBrand] = useState('Basic-Fit');
+  const brandKey = selectedBrand === 'Basic-Fit' ? 'basic' : 'train';
+  const mapQuery = `${selectedBrand} ${selectedCity}`;
+  const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`;
+
   return (
     <section className="clubs-page section">
       <div className="container clubs-container">
         <div className="clubs-hero">
           <h1 className="clubs-title">Gym Clubs in the Netherlands</h1>
           <p className="clubs-intro">
-            Explore recommended fitness clubs in Amsterdam, Rotterdam, Den Haag, and Almere.
-            The first map shows Basic-Fit locations, and the second map highlights TrainMore clubs.
+            Choose a city, then pick Basic-Fit or TrainMore to open the right map and club location.
           </p>
         </div>
 
-        <div className="map-section">
-          <div className="map-card">
-            <div className="map-card-header">
-              <h2>Basic-Fit Clubs</h2>
-              <p>Amsterdam · Rotterdam · Den Haag · Almere</p>
+        <div className="selector-panel">
+          <div className="selector-group">
+            <h2>Pick a city</h2>
+            <div className="button-row">
+              {cityList.map((city) => (
+                <button
+                  key={city}
+                  className={`selector-btn ${selectedCity === city ? 'active' : ''}`}
+                  onClick={() => setSelectedCity(city)}
+                >
+                  {city}
+                </button>
+              ))}
             </div>
-            <div className="map-frame-wrapper">
-              <iframe
-                title="Basic Fit Clubs"
-                src="https://maps.google.com/maps?q=Basic-Fit+Amsterdam+Rotterdam+Den+Haag+Almere&output=embed"
-                allowFullScreen
-                loading="lazy"
-              />
-            </div>
-            <ul className="club-list">
-              <li><strong>Amsterdam:</strong> Basic-Fit Amsterdam Sloterdijk</li>
-              <li><strong>Rotterdam:</strong> Basic-Fit Rotterdam Blaak</li>
-              <li><strong>Den Haag:</strong> Basic-Fit Den Haag Centrum</li>
-              <li><strong>Almere:</strong> Basic-Fit Almere Stad</li>
-            </ul>
           </div>
 
-          <div className="map-card">
-            <div className="map-card-header">
-              <h2>TrainMore Clubs</h2>
-              <p>Amsterdam · Rotterdam · Den Haag · Almere</p>
+          <div className="selector-group">
+            <h2>Pick a club brand</h2>
+            <div className="button-row">
+              {brandList.map((brand) => (
+                <button
+                  key={brand}
+                  className={`selector-btn ${selectedBrand === brand ? 'active' : ''}`}
+                  onClick={() => setSelectedBrand(brand)}
+                >
+                  {brand}
+                </button>
+              ))}
             </div>
-            <div className="map-frame-wrapper">
-              <iframe
-                title="TrainMore Clubs"
-                src="https://maps.google.com/maps?q=TrainMore+Amsterdam+Rotterdam+Den+Haag+Almere&output=embed"
-                allowFullScreen
-                loading="lazy"
-              />
-            </div>
-            <ul className="club-list">
-              <li><strong>Amsterdam:</strong> TrainMore Amsterdam Centrum</li>
-              <li><strong>Rotterdam:</strong> TrainMore Rotterdam Zuidplein</li>
-              <li><strong>Den Haag:</strong> TrainMore Den Haag Spui</li>
-              <li><strong>Almere:</strong> TrainMore Almere Stad</li>
-            </ul>
+          </div>
+        </div>
+
+        <div className="map-card single-map-card">
+          <div className="map-card-header">
+            <h2>{selectedBrand} in {selectedCity}</h2>
+            <p>{clubsByCity[selectedCity][brandKey]}</p>
+          </div>
+          <div className="map-frame-wrapper">
+            <iframe
+              title={`${selectedBrand} ${selectedCity}`}
+              src={mapUrl}
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
+          <div className="club-details">
+            <p>
+              Showing the {selectedBrand} club in <strong>{selectedCity}</strong>. Click another city or brand to update the map.
+            </p>
           </div>
         </div>
       </div>
