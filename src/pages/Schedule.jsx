@@ -40,6 +40,7 @@ const Schedule = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [showSavedToast, setShowSavedToast] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState('default');
+  const [isToggling, setIsToggling] = useState(false);
   const notifiedEvents = useRef({});
 
   useEffect(() => {
@@ -73,6 +74,12 @@ const Schedule = () => {
       setNotificationPermission(Notification.permission);
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('fitnessmaster-schedule-notifications', String(notificationsEnabled));
+    }
+  }, [notificationsEnabled]);
 
   useEffect(() => {
     if (!notificationsEnabled || typeof window === 'undefined') return;
@@ -123,11 +130,13 @@ const Schedule = () => {
   };
 
   const handleNotificationToggle = async () => {
+    if (isToggling) return;
+    setIsToggling(true);
+
     if (notificationsEnabled) {
       // Confirm before disabling
       if (window.confirm('Are you sure you want to disable reminders?')) {
         setNotificationsEnabled(false);
-        localStorage.setItem('fitnessmaster-schedule-notifications', 'false');
       }
     } else {
       // Try to enable reminders
@@ -136,25 +145,24 @@ const Schedule = () => {
         setNotificationPermission(permission);
         if (permission === 'granted') {
           setNotificationsEnabled(true);
-          localStorage.setItem('fitnessmaster-schedule-notifications', 'true');
           new Notification('Notifications Enabled!', {
             body: 'You will now receive reminders for your scheduled workouts.',
             icon: '/logo192.png'
           });
         } else {
           setNotificationsEnabled(false);
-          localStorage.setItem('fitnessmaster-schedule-notifications', 'false');
           alert('Please allow notifications in your browser settings to receive workout reminders.');
         }
       }
     }
+
+    setIsToggling(false);
   };
 
   const saveSchedule = () => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('fitnessmaster-schedule', JSON.stringify(schedule));
       localStorage.setItem('fitnessmaster-schedule-times', JSON.stringify(scheduleTimes));
-      localStorage.setItem('fitnessmaster-schedule-notifications', String(notificationsEnabled));
     }
     console.log('Saving schedule for', currentUser?.email, schedule, scheduleTimes);
     setShowSavedToast(true);
@@ -181,7 +189,7 @@ const Schedule = () => {
         </div>
         <div className="schedule-actions">
           <button
-            className={`btn-notification ${notificationsEnabled ? 'active' : ''}`}
+            className={`btn-notification ${notificationsEnabled ? 'active' : ''} ${isToggling ? 'toggling' : ''}`}
             onClick={handleNotificationToggle}
           >
             <Bell size={20} />
